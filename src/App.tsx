@@ -1,26 +1,51 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { lazy, Suspense } from "react";
+import { useRoutes, Navigate, RouteObject, Link } from "react-router-dom";
 
-function App() {
+const Home = lazy(() => import("./components/Home"));
+const About = lazy(() => import("./components/About"));
+
+const routes: RouteObject[] = [
+  {
+    path: "/",
+    element: (
+      <Suspense fallback={<div>Loading...</div>}>
+        <Home />
+      </Suspense>
+    ),
+  },
+  {
+    path: "/about",
+    element: (
+      <Suspense fallback={<div>Loading...</div>}>
+        <About />
+      </Suspense>
+    ),
+  },
+  { path: "*", element: <Navigate to="/" /> },
+];
+
+const App: React.FC = () => {
+  const element = useRoutes(routes);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <nav>
+        <ul>
+          <li>
+            <Link className="nav-link" to="/">
+              Home
+            </Link>
+          </li>
+          <li>
+            <Link className="nav-link" to="/about">
+              About
+            </Link>
+          </li>
+        </ul>
+      </nav>
+      {element}
+    </>
   );
-}
+};
 
 export default App;
